@@ -35,6 +35,7 @@ extern void platform_render_frame(void);
 extern int platform_get_key(void);
 extern void platform_exit(void);
 
+static BOOL quit = FALSE;
 static BYTE video_ram_old[32*24];
 
 unsigned char mem[65536];
@@ -245,13 +246,22 @@ int scrn_freq = 2;
 void do_interrupt() {
     static int count=0;
 
+    if (quit) {
+        return;
+    }
+    
     if (interrupted == 1) {
         interrupted = 2;
 
         int key = platform_get_key();
+
         if (key == KEY_ESC) {
-            platform_log("Escape key pressed, exiting main loop\n");
-            platform_exit();
+            quit = TRUE;
+            interrupted = 0;
+
+            platform_log("Escape key pressed, quit\n");
+
+            return;
         }
 
         /* only do refresh() every 1/Nth */
@@ -316,7 +326,7 @@ int jupiter_main_loop(void) {
     z80_init();
     refresh();
     
-    while (1) {
+    while (!quit) {
         // Emulator step
         z80_frame();
     }

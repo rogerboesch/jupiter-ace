@@ -104,6 +104,10 @@ int platform_get_key(void) {
 }
 
 void platform_exit(void) {
+    platform_log("Cleanup emulator\n");
+
+    free(s_pixels);
+
     SDL_DestroyTexture(s_texture);
 
     SDL_ShowCursor(SDL_ENABLE);
@@ -112,8 +116,6 @@ void platform_exit(void) {
     SDL_DestroyWindow(s_window);
 
     SDL_Quit(); 
-
-    exit(1);
  }
 
 // --- main function -----------------------------------------------------------
@@ -147,6 +149,10 @@ int main(int const argc, const char* const argv[], char* envv[]) {
 
     // jupiter main loop
     jupiter_main_loop();
+
+    platform_log("Quit emulator\n");
+
+    platform_exit();
 
     return 0;
 }

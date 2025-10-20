@@ -133,9 +133,9 @@ void z80_frame() {
             platform_log("z80_frame(): tstates");
         }
         
-        if (interrupted == 1) {
-        //if (interrupted == 1 && intsample && iff1) {
+        if (interrupted == 1 && intsample && iff1) {
             do_interrupt();
+            
             push2(pc);
             pc=0x38;
             interrupted=0;
