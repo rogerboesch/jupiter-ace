@@ -103,9 +103,31 @@ int platform_get_key(void) {
     return key;
 }
 
-void platform_exit(void) {
-    platform_log("Cleanup emulator\n");
+void platform_init(void) {
+   int sdl_init_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
 
+    if (SDL_Init(sdl_init_flags) != 0) {
+        platform_err("SDL init error: %s\n", SDL_GetError());
+        exit(1);
+    }
+
+    s_window = SDL_CreateWindow("Jupiter Ace Emulator", 0, 0, WINDOW_W, WINDOW_H, SDL_WINDOW_SHOWN);
+    if (!s_window) {
+        platform_err("SDL window error: %s\n", SDL_GetError());
+        SDL_Quit();
+
+        exit(1);
+    }
+
+    s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
+    if (!s_renderer) {
+        s_renderer = SDL_CreateRenderer(s_window, -1, 0);
+    }
+
+    create_pixel_buffer(s_renderer);
+}
+
+void platform_exit(void) {
     free(s_pixels);
 
     SDL_DestroyTexture(s_texture);
@@ -123,36 +145,15 @@ void platform_exit(void) {
 int main(int const argc, const char* const argv[], char* envv[]) {
     platform_log("Path: %s\n", argv[0]);
 
-    int sdl_init_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
-
-    if (SDL_Init(sdl_init_flags) != 0) {
-        platform_err("SDL init error: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    s_window = SDL_CreateWindow("Jupiter Ace Emulator", 0, 0, WINDOW_W, WINDOW_H, SDL_WINDOW_SHOWN);
-    if (!s_window) {
-        platform_err("SDL window error: %s\n", SDL_GetError());
-        SDL_Quit();
-
-        return 1;
-    }
-
-    s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
-    if (!s_renderer) {
-        s_renderer = SDL_CreateRenderer(s_window, -1, 0);
-    }
-
-    create_pixel_buffer(s_renderer);
-
     platform_log("Start emulator\n");
 
-    // jupiter main loop
+    platform_init();
+
     jupiter_main_loop();
 
-    platform_log("Stop emulator\n");
-
     platform_exit();
+
+    platform_log("Stop emulator\n");
 
     return 0;
 }
