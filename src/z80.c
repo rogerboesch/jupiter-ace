@@ -127,31 +127,31 @@ void z80_frame() {
         //rbxe_log("z80_frame(): tstates: %lu\n", tstates);
 
         if (tstates > tsmax) {
+            platform_log("z80_frame(): tstates");
+
             memcpy(&savedG, &g, sizeof(g));
             fix_tstates();
-
-            platform_log("z80_frame(): tstates");
         }
         
         if (interrupted == 1 && intsample && iff1) {
+            platform_log("z80_frame(): interrupted");
+ 
             do_interrupt();
             
             push2(pc);
             pc=0x38;
             interrupted=0;
-
-            platform_log("z80_frame(): interrupted");
-        }
+       }
         
         if (reset_ace) {
+            platform_log("z80_frame(): reset_ace");
+ 
             /* actually a kludge to let us do a reset */
             a=f=b=c=d=e=h=l=a1=f1=b1=c1=d1=e1=h1=l1=i=r=iff1=iff2=im=0;
             ixoriy=new_ixoriy=0;
             ix=iy=sp=pc=0;
             tstates=radjust=0;
             reset_ace = 0;
-
-            platform_log("z80_frame(): reset_ace");
         }
 }
 

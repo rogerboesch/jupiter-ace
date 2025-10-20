@@ -145,12 +145,12 @@ int main(int const argc, const char* const argv[], char* envv[]) {
 
     create_pixel_buffer(s_renderer);
 
-    platform_log("Starting main loop\n");
+    platform_log("Start emulator\n");
 
     // jupiter main loop
     jupiter_main_loop();
 
-    platform_log("Quit emulator\n");
+    platform_log("Stop emulator\n");
 
     platform_exit();
 
