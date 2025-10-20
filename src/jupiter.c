@@ -33,6 +33,7 @@ extern void z80_frame(void);
 extern void platform_set_pixel(int x, int y, UINT32 color);
 extern void platform_render_frame(void);
 extern int platform_get_key(void);
+extern void platform_exit(void);
 
 static BYTE video_ram_old[32*24];
 
@@ -250,7 +251,7 @@ void do_interrupt() {
         int key = platform_get_key();
         if (key == KEY_ESC) {
             platform_log("Escape key pressed, exiting main loop\n");
-            exit(0);
+            platform_exit();
         }
 
         /* only do refresh() every 1/Nth */

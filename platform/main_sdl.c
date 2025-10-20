@@ -103,6 +103,19 @@ int platform_get_key(void) {
     return key;
 }
 
+void platform_exit(void) {
+    SDL_DestroyTexture(s_texture);
+
+    SDL_ShowCursor(SDL_ENABLE);
+
+    SDL_DestroyRenderer(s_renderer);
+    SDL_DestroyWindow(s_window);
+
+    SDL_Quit(); 
+
+    exit(1);
+ }
+
 // --- main function -----------------------------------------------------------
 
 int main(int const argc, const char* const argv[], char* envv[]) {
@@ -135,14 +148,5 @@ int main(int const argc, const char* const argv[], char* envv[]) {
     // jupiter main loop
     jupiter_main_loop();
 
-    SDL_DestroyTexture(s_texture);
-
-    SDL_ShowCursor(SDL_ENABLE);
-
-    SDL_DestroyRenderer(s_renderer);
-    SDL_DestroyWindow(s_window);
-
-    SDL_Quit(); 
-    
     return 0;
 }
