@@ -15,26 +15,30 @@ static SDL_Window* s_window = NULL;
 static SDL_Renderer* s_renderer = NULL;
 static UINT32* s_pixels = NULL;
 
+#define BORDER      10
 #define WIDTH       256
 #define HEIGHT      192
-#define HEARTBEAT   16
+#define SCREEN_W   (WIDTH + BORDER * 2)
+#define SCREEN_H   (HEIGHT + BORDER * 2)
 
 // --- pixel support -----------------------------------------------------------
 
 static void create_pixel_buffer(SDL_Renderer* r) {
-    s_pixels = malloc(WIDTH * HEIGHT * sizeof(UINT32));
-    s_texture = SDL_CreateTexture(r, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, WIDTH, HEIGHT);
+    s_pixels = malloc(SCREEN_W * SCREEN_H * sizeof(UINT32));
+    memset(s_pixels, 0, SCREEN_W * SCREEN_H * sizeof(UINT32));
+
+    s_texture = SDL_CreateTexture(r, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, SCREEN_W, SCREEN_H);
 }
 
 void platform_set_pixel(int x, int y, UINT32 color) {
     if (x < 0 || y < 0 || x > WIDTH-1 || y > HEIGHT-1) return;
-    s_pixels[y * WIDTH + x] = color;    
+    s_pixels[y * SCREEN_W + (BORDER+x)] = color;    
 }
 
 // --- platform support --------------------------------------------------------
 
 void platform_render_frame(void) {
-    SDL_UpdateTexture(s_texture, NULL, s_pixels, WIDTH * sizeof(Uint32));
+    SDL_UpdateTexture(s_texture, NULL, s_pixels, SCREEN_W * sizeof(Uint32));
     SDL_RenderCopy(s_renderer, s_texture, NULL, NULL);
     SDL_RenderPresent(s_renderer);
 
