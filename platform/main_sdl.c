@@ -94,11 +94,8 @@ static int process_event() {
 }
 
 int platform_get_key(void) {
-    SDL_StartTextInput();
 
     int key = process_event();
-    
-    SDL_StopTextInput();
 
     return key;
 }
@@ -125,9 +122,17 @@ void platform_init(void) {
     }
 
     create_pixel_buffer(s_renderer);
+
+    SDL_StartTextInput();
+}
+
+void platform_sleep(UINT32 ms) {
+    SDL_Delay(ms);
 }
 
 void platform_exit(void) {
+    SDL_StopTextInput();
+
     free(s_pixels);
 
     SDL_DestroyTexture(s_texture);

@@ -34,6 +34,7 @@ extern void platform_set_pixel(int x, int y, UINT32 color);
 extern void platform_render_frame(void);
 extern int platform_get_key(void);
 extern void platform_exit(void);
+extern void platform_sleep(UINT32 ms);
 
 static BOOL quit = FALSE;
 static BYTE video_ram_old[32*24];
@@ -235,8 +236,7 @@ void fix_tstates() {
     t0 = t1;
 
     if (delay > 0.0) {
-        // TODO: Sleep
-        //usleep(delay*1000);
+        platform_sleep((UINT32)(delay*1000));
     }
 }
 
