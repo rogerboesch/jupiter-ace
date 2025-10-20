@@ -21,6 +21,10 @@ static UINT32* s_pixels = NULL;
 #define SCREEN_W   (WIDTH + BORDER * 2)
 #define SCREEN_H   (HEIGHT + BORDER * 2)
 
+#define SCALE      3
+#define WINDOW_W  (SCREEN_W * SCALE)
+#define WINDOW_H  (SCREEN_H * SCALE)
+
 // --- pixel support -----------------------------------------------------------
 
 static void create_pixel_buffer(SDL_Renderer* r) {
@@ -111,7 +115,7 @@ int main(int const argc, const char* const argv[], char* envv[]) {
         return 1;
     }
 
-    s_window = SDL_CreateWindow("Jupiter", 0, 0, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+    s_window = SDL_CreateWindow("Jupiter Ace Emulator", 0, 0, WINDOW_W, WINDOW_H, SDL_WINDOW_SHOWN);
     if (!s_window) {
         platform_err("SDL window error: %s\n", SDL_GetError());
         SDL_Quit();
