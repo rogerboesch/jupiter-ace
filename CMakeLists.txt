@@ -69,6 +69,7 @@ add_compile_definitions(SDL_MAIN_HANDLED)
 set(JUPITER_SOURCES
 	src/z80.c
 	src/jupiter.c
+	src/keyboard_handler.c
 )
 
 
