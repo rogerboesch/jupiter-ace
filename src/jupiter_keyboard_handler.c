@@ -336,22 +336,28 @@ void keyboard_process(void) {
 
         return;
     }
-    else if (key == KEY_TAB) {
+    else if (key == KEY_F10) {
         platform_log("TAB key pressed, RESET");
         reset_ace = 1;
     }
-    else if (key == KEY_1) {
+    else if (key == KEY_F1) {
         spooler_add_str("load frogger\n");
     }
-    else if (key == KEY_2) {
+    else if (key == KEY_F2) {
         spooler_add_str("go\n");
     }
     else if (key > 0) {
         int code = process_key(key);
-        platform_dbg("Key %d => Jupiter code %d", key, code);
+  
+        char temp[10];
+        sprintf(temp, "%c", key);
+
+        platform_dbg("Key %d => Jupiter code %d ('%s')", key, code, temp);
+        
+        spooler_add_str(temp);
 
         if (code > 0) {
-            keyboard_ports[0xff & code] &= ~(code>>8);
+            //keyboard_ports[0xff & code] &= ~(code>>8);
         }
 
     }
