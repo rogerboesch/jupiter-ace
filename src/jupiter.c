@@ -8,7 +8,7 @@
 #include "rb_keycodes.h"
 #include "jupiter_keys.h"
 
-#include "ace.rom.h"
+#include "rom_ace.h"
 #include "z80.h"
 
 // --- External functions ------------------------------------------------------
@@ -250,7 +250,7 @@ void patch_rom(BYTE *mem) {
 }
 
 void setup() {
-    memcpy(mem, ace_rom, ace_rom_len);
+    memcpy(mem, rom_ace, rom_ace_len);
     patch_rom(mem);
     memset(mem+8192, 0xff, sizeof(mem)-8192);
     keyboard_clear();

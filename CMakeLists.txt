@@ -69,10 +69,9 @@ add_compile_definitions(SDL_MAIN_HANDLED)
 set(JUPITER_SOURCES
 	src/z80.c
 	src/jupiter.c
-	src/keyboard_handler.c
-	src/file_handler.c
+	src/jupiter_keyboard_handler.c
+	src/jupiter_file_handler.c
 )
-
 
 # === JUPITER-ACE: SDL only ====================================================
 

@@ -4,7 +4,7 @@
 #include <ctype.h>
 
 #include "z80.h"
-#include "frogger.h"
+#include "rom_frogger.h"
 
 #include "rb_types.h"
 #include "rb_platform.h"
@@ -147,7 +147,7 @@ void load_p(int _de, int _hl) {
         // TODO: Check for filename and apply to data
         //_filename = [NSString stringWithCString:filename encoding:NSUTF8StringEncoding];
         //_data = tapes[_filename];
-        data = FROGGER_DIC;
+        data = rom_frogger;
         platform_dbg("Whatever filename you choose, right now, 'Frogger' is loaded");
 
         if (!data) {
