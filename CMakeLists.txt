@@ -70,6 +70,7 @@ set(JUPITER_SOURCES
 	src/z80.c
 	src/jupiter.c
 	src/keyboard_handler.c
+	src/file_handler.c
 )
 
 
