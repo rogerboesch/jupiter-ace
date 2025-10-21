@@ -124,17 +124,17 @@ void z80_frame() {
 #include "z80ops.c"
         }
 
-        //rbxe_log("z80_frame(): tstates: %lu\n", tstates);
+        //platform_dbg("z80_frame(): tstates: %lu", tstates);
 
         if (tstates > tsmax) {
-            platform_log("z80_frame(): tstates");
+            //platform_dbg("z80_frame(): tstates");
 
             memcpy(&savedG, &g, sizeof(g));
             fix_tstates();
         }
         
         if (interrupted == 1 && intsample && iff1) {
-            platform_log("z80_frame(): interrupted");
+            //platform_dbg("z80_frame(): interrupted");
  
             do_interrupt();
             
@@ -144,7 +144,7 @@ void z80_frame() {
        }
         
         if (reset_ace) {
-            platform_log("z80_frame(): reset_ace");
+            //platform_dbg("z80_frame(): reset_ace");
  
             /* actually a kludge to let us do a reset */
             a=f=b=c=d=e=h=l=a1=f1=b1=c1=d1=e1=h1=l1=i=r=iff1=iff2=im=0;

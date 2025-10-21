@@ -4,6 +4,7 @@
 #define KEY_BACKSPACE   8      // The backspace key
 #define KEY_TAB         9      // The tab key
 #define KEY_ENTER       10     // The enter/return key
+#define KEY_SPACE       999    // The space key, TODO: CHECK CODE
 #define KEY_EXCLAMATION 33     // !
 #define KEY_DOUBLEQUOTE 34     // "
 #define KEY_HASH        35     // #

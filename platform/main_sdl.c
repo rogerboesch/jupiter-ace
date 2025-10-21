@@ -79,12 +79,12 @@ static int process_event() {
                     case SDLK_END:          return KEY_END;
                     case SDLK_PAGEUP:       return KEY_PAGE_UP;
                     case SDLK_PAGEDOWN:     return KEY_PAGE_DOWN;
- 
+                    case SDLK_SPACE:        return KEY_SPACE;
+
                     case SDLK_LEFT:  return KEY_LEFT;
                     case SDLK_RIGHT: return KEY_RIGHT;
                     case SDLK_UP:    return KEY_UP;
                     case SDLK_DOWN:  return KEY_DOWN;
-
                 }
                 break;
             }
@@ -104,13 +104,13 @@ void platform_init(void) {
    int sdl_init_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
 
     if (SDL_Init(sdl_init_flags) != 0) {
-        platform_err("SDL init error: %s\n", SDL_GetError());
+        platform_err("SDL init error: %s", SDL_GetError());
         exit(1);
     }
 
     s_window = SDL_CreateWindow("Jupiter Ace Emulator", 0, 0, WINDOW_W, WINDOW_H, SDL_WINDOW_SHOWN);
     if (!s_window) {
-        platform_err("SDL window error: %s\n", SDL_GetError());
+        platform_err("SDL window error: %s", SDL_GetError());
         SDL_Quit();
 
         exit(1);
@@ -148,9 +148,9 @@ void platform_exit(void) {
 // --- main function -----------------------------------------------------------
 
 int main(int const argc, const char* const argv[], char* envv[]) {
-    platform_log("Path: %s\n", argv[0]);
+    platform_log("Path: %s", argv[0]);
 
-    platform_log("Start emulator\n");
+    platform_log("Start emulator");
 
     platform_init();
 
@@ -158,7 +158,7 @@ int main(int const argc, const char* const argv[], char* envv[]) {
 
     platform_exit();
 
-    platform_log("Stop emulator\n");
+    platform_log("Stop emulator");
 
     return 0;
 }

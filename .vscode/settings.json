@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "rb_types.h": "c"
+        "rb_types.h": "c",
+        "stdarg.h": "c",
+        "stdlib.h": "c"
     }
 }
