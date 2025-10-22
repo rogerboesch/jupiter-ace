@@ -121,7 +121,7 @@ void z80_frame() {
         radjust++;
         
         switch(op) {
-#include "z80ops.c"
+#include "z80-ops.c"
         }
 
         //platform_dbg("z80_frame(): tstates: %lu", tstates);

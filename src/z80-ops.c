@@ -1031,7 +1031,7 @@ instr(0xca,10);
 endinstr;
 
 instr(0xcb,4);
-#include "cbops.c"
+#include "z80-cbops.c"
 endinstr;
 
 instr(0xcc,10);
@@ -1215,7 +1215,7 @@ instr(0xec,10);
 endinstr;
 
 instr(0xed,4);
-#include"edops.c"
+#include"z80-edops.c"
 endinstr;
 
 instr(0xee,7);
