@@ -12,6 +12,8 @@
 
 extern int platform_get_key(void);
 extern void print_str(char* str, int x, int y);
+extern void print_char_set(void);
+
 extern void refresh(BOOL force_refresh);
 
 void keyboard_clear(void);
@@ -366,7 +368,7 @@ void keyboard_process(void) {
             spooler_add_str("\x03"); // Graphics mode
             break;
         case KEY_F6:
-            print_str("HELLO", 1, 1);
+            print_char_set();
             break;
         case KEY_F7:
             break;

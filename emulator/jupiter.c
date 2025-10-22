@@ -246,7 +246,6 @@ BOOL refresh(BOOL force_refresh) {
     return TRUE;
 }
 
-
 // --- Write any text in the pixel buffer --------------------------------------
 
 void print_char(char ch, int x, int y) {
@@ -265,9 +264,24 @@ void print_str(char* str, int x, int y) {
     platform_render_frame();
 }
 
+void print_char_set() {
+    int x=0, y=1;
+    for (int i=0; i<256; i++) {
+        print_char(i, x, y);
+        x++;
+
+        if (x>=32) {
+            x=0;
+            y++;
+        }
+    }
+
+    platform_render_frame();
+}
+
 void print_welcome(void) {
     print_str("JUPITER ACE EMU 0.4", 1, 1);
-    print_str("(C)2025 BY ROGER BOESCH", 1, 2);
+    print_str("\x7f 2025 BY ROGER BOESCH", 1, 2);
 
     platform_dbg("Prnt welcome");
 }
