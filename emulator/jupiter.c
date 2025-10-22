@@ -33,7 +33,8 @@ extern void platform_sleep(UINT32 ms);
 
 // --- Forward functions -------------------------------------------------------
 
-BOOL refresh(void);
+BOOL refresh(BOOL force_refresh);
+void print_welcome(void);
 
 // --- Globals -----------------------------------------------------------------
 
@@ -142,7 +143,7 @@ unsigned int out(int h, int l, int a) {
     return 0;
 }
 
-// --- Interrupt & TStatae handling  -------------------------------------------
+// --- Interrupt & TState handling  --------------------------------------------
 
 void fix_tstates() {
     static int first_time = 1;
@@ -169,7 +170,8 @@ void fix_tstates() {
 void do_interrupt() {
     static int scrn_freq = 2;
     static int count = 0;
- 
+    static BOOL first_time = TRUE;
+
     if (quit) {
         return;
     }
@@ -183,9 +185,16 @@ void do_interrupt() {
         count++;
         if (count >= scrn_freq) {
             count=0;
+
             //spooler_read();
-            if (refresh())
+            if (refresh(FALSE)) {
                 platform_render_frame();
+
+                if (first_time) {
+                    print_welcome();
+                    first_time = FALSE;
+                }
+            }
         }
     }
 }
@@ -215,14 +224,14 @@ void set_image_character(int x, int y, int inv, BYTE *charbmap) {
     }
 }
 
-BOOL refresh() {
+BOOL refresh(BOOL force_refresh) {
     BYTE *video_ram, *charset;
     int x, y, c;
     
     charset = mem+0x2c00;
     video_ram = mem+0x2400;
     
-    if (!memcmp(video_ram, video_ram_old, sizeof(video_ram_old))) {
+    if (!memcmp(video_ram, video_ram_old, sizeof(video_ram_old)) && !force_refresh) {
         return FALSE;
     }
 
@@ -235,6 +244,32 @@ BOOL refresh() {
     }
 
     return TRUE;
+}
+
+
+// --- Write any text in the pixel buffer --------------------------------------
+
+void print_char(char ch, int x, int y) {
+    BYTE* charset = mem+0x2c00;
+
+    set_image_character(x, y, ch&0x80, charset + (ch&0x7f)*8);
+}
+
+void print_str(char* str, int x, int y) {
+    char* c = str;
+    while (*c) {
+        print_char(*c++, x, y);
+        x++;
+    }
+
+    platform_render_frame();
+}
+
+void print_welcome(void) {
+    print_str("JUPITER ACE EMU 0.4", 1, 1);
+    print_str("(C)2025 BY ROGER BOESCH", 1, 2);
+
+    platform_dbg("Prnt welcome");
 }
 
 // --- Main emulatoir loop -----------------------------------------------------
@@ -264,8 +299,7 @@ int jupiter_main_loop(void) {
     // Initialize jupiter
     setup();
     z80_init();
-    refresh();
-    
+
     while (!quit) {
         // Emulator step
         z80_frame();

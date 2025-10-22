@@ -10,7 +10,10 @@
 
 // --- Functions ---------------------------------------------------------------
 
-extern int  platform_get_key(void);
+extern int platform_get_key(void);
+extern void print_str(char* str, int x, int y);
+extern void refresh(BOOL force_refresh);
+
 void keyboard_clear(void);
 
 // --- Globals -----------------------------------------------------------------
@@ -326,12 +329,26 @@ int process_key(int code) {
 }
 
 void keyboard_process(void) {
+    static int esc_count = 0;
     int key = platform_get_key();
-
+    int code = 0;
+    
+    if (key == 0) {
+        return;
+    }
+    
     switch (key) {
         case KEY_ESC:
-            platform_log("Escape key pressed, quit");
-            quit = 1;
+            if (esc_count == 0) {
+                platform_dbg("Press ESC first time");
+
+                print_str("PRESS <ESC> AGAIN TO QUIT", 1, 1);
+                esc_count++;
+            }
+            else {
+                platform_log("Escape key pressed, quit");
+                quit = 1;
+            }
             break;
         case KEY_F1:
             spooler_add_str("load frogger\n");  // Temporary
@@ -349,6 +366,7 @@ void keyboard_process(void) {
             spooler_add_str("\x03"); // Graphics mode
             break;
         case KEY_F6:
+            print_str("HELLO", 1, 1);
             break;
         case KEY_F7:
             break;
@@ -375,17 +393,22 @@ void keyboard_process(void) {
             break;
 
         default:
-            if (key > 0) {
-                int code = process_key(key);
-  
-                char temp[10];
-                sprintf(temp, "%c", key);
+            code = process_key(key);
 
-                platform_dbg("Key %d => Jupiter code %d ('%s')", key, code, temp);
-        
-                spooler_add_str(temp);
-            }
+            char temp[10];
+            sprintf(temp, "%c", key);
+
+            platform_dbg("Key %d => Jupiter code %d ('%s')", key, code, temp);
+    
+            spooler_add_str(temp);
             break;
     }
   
+    // Reset ESC counter
+    if (key != KEY_ESC && esc_count != 0) {
+        platform_dbg("Reset ESC counter");
+        esc_count = 0;
+
+        refresh(TRUE);
+    }
 }
