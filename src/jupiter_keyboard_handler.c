@@ -328,38 +328,64 @@ int process_key(int code) {
 void keyboard_process(void) {
     int key = platform_get_key();
 
-    if (key == KEY_ESC) {
-        quit = TRUE;
-        interrupted = 0;
+    switch (key) {
+        case KEY_ESC:
+            platform_log("Escape key pressed, quit");
+            quit = 1;
+            break;
+        case KEY_F1:
+            spooler_add_str("load frogger\n");  // Temporary
+            break;
+        case KEY_F2:
+            spooler_add_str("go\n");
+            break;
+        case KEY_F3:
+            spooler_add_str("\x01"); // Delete line
+            break;
+        case KEY_F4:
+            spooler_add_str("\x02"); // Inverse video
+            break;
+        case KEY_F5:
+            spooler_add_str("\x03"); // Graphics mode
+            break;
+        case KEY_F6:
+            break;
+        case KEY_F7:
+            break;
+        case KEY_F8:
+            break;
+        case KEY_F9:
+            break;
+        case KEY_F10:
+            platform_log("F10 key pressed, RESET");
+            reset_ace = 1;
+            break;
 
-        platform_log("Escape key pressed, quit");
+        case KEY_LEFT:
+            spooler_add_str("\x04");
+            break;
+        case KEY_DOWN:
+            spooler_add_str("\x05");
+            break;
+        case KEY_UP:
+            spooler_add_str("\x06");
+            break;
+        case KEY_RIGHT:
+            spooler_add_str("\x07");
+            break;
 
-        return;
-    }
-    else if (key == KEY_F10) {
-        platform_log("TAB key pressed, RESET");
-        reset_ace = 1;
-    }
-    else if (key == KEY_F1) {
-        spooler_add_str("load frogger\n");
-    }
-    else if (key == KEY_F2) {
-        spooler_add_str("go\n");
-    }
-    else if (key > 0) {
-        int code = process_key(key);
+        default:
+            if (key > 0) {
+                int code = process_key(key);
   
-        char temp[10];
-        sprintf(temp, "%c", key);
+                char temp[10];
+                sprintf(temp, "%c", key);
 
-        platform_dbg("Key %d => Jupiter code %d ('%s')", key, code, temp);
+                platform_dbg("Key %d => Jupiter code %d ('%s')", key, code, temp);
         
-        spooler_add_str(temp);
-
-        if (code > 0) {
-            //keyboard_ports[0xff & code] &= ~(code>>8);
-        }
-
+                spooler_add_str(temp);
+            }
+            break;
     }
   
 }
