@@ -65,7 +65,7 @@ endif()
 # Helpful defines across all targets
 add_compile_definitions(SDL_MAIN_HANDLED)
 
-# Editor sources
+# Emulator sources
 set(JUPITER_SOURCES
 	src/z80.c
 	src/jupiter.c

@@ -9,14 +9,15 @@
 #include "rb_types.h"
 #include "rb_platform.h"
 
-// ---Globals ------------------------------------------------------------------
+// --- Globals -----------------------------------------------------------------
 
 extern BYTE mem[65536];
 
-BYTE empty_dict[] = {           /* a small forth program */
-    0x1a,0x00,0x00,0x6f,        /* will be loaded if     */
-    0x74,0x68,0x65,0x72,        /* wanted file can't be  */
-    0x20,0x20,0x20,0x20,        /* opened                */
+// A small forth program will be loaded if file cant be opened
+BYTE empty_dict[] = {           
+    0x1a,0x00,0x00,0x6f,        
+    0x74,0x68,0x65,0x72,        
+    0x20,0x20,0x20,0x20,        
     0x20,0x2a,0x00,0x51,
     0x3c,0x58,0x3c,0x4c,
     0x3c,0x4c,0x3c,0x4f,
@@ -35,10 +36,11 @@ BYTE empty_dict[] = {           /* a small forth program */
     0xff,0x00
 };
 
-BYTE empty_bytes[799] = {       /* a small screen       */
-    0x1a,0x00,0x20,0x6f,        /* will be loaded if    */
-    0x74,0x68,0x65,0x72,        /* wanted file can't be */
-    0x20,0x20,0x20,0x20,        /* opened               */
+// A small screen will be loaded if file cant be opened
+BYTE empty_bytes[799] = {       
+    0x1a,0x00,0x20,0x6f,        
+    0x74,0x68,0x65,0x72,        
+    0x20,0x20,0x20,0x20,        
     0x20,0x00,0x03,0x00,
     0x24,0x20,0x20,0x20,
     0x20,0x20,0x20,0x20,
@@ -56,28 +58,30 @@ BYTE empty_bytes[799] = {       /* a small screen       */
 
 void save_p(int _de, int _hl) {
     char filename[64];
-    int i;
     static int firstTime=1;    
     
     if (firstTime) {
         //_data = [NSMutableData data];
-        
-        i=0;
+        int i=0;
+
         while (!isspace(mem[_hl+1+i]) && i<10) {
             filename[i]=mem[_hl+1+i];
             i++;
         }
+
         filename[i++]='.';
         if (mem[8961]) { /* dict or bytes save */
             filename[i++]='b';
             filename[i++]='y';
             filename[i++]='t';
-        } else {
+        }
+        else {
             filename[i++]='d';
             filename[i++]='i';
             filename[i++]='c';
         }
         filename[i++]='\0';
+
         //_filename = [NSString stringWithCString:filename encoding:NSUTF8StringEncoding];
         _de++;
         char bytes[2] = {
@@ -115,15 +119,14 @@ void save_p(int _de, int _hl) {
 
 void load_p(int _de, int _hl) {
     char filename[64];
-    int i;
     static BYTE *empty_tape;
     static int efp;
-    static int firstTime=1;
+    static BOOL firstTime = TRUE;
     static const BYTE *ptr;
     static BYTE* data;
 
     if (firstTime) {
-        i=0;
+        int i=0;
 
         while (!isspace(mem[9985+1+i])&&i<10) {
             filename[i]=mem[9985+1+i]; i++;
@@ -135,7 +138,8 @@ void load_p(int _de, int _hl) {
             filename[i++]='y';
             filename[i++]='t';
             empty_tape = empty_bytes;
-        } else {
+        }
+        else {
             filename[i++]='d';
             filename[i++]='i';
             filename[i++]='c';
@@ -154,51 +158,74 @@ void load_p(int _de, int _hl) {
             efp=0;
             _de=empty_tape[efp++];
             _de+=256*empty_tape[efp++];
-            memcpy(&mem[_hl],&empty_tape[efp],_de-1); /* -1 -> skip last byte */
+
+            // -1 -> skip last byte
+            memcpy(&mem[_hl],&empty_tape[efp],_de-1); 
             
-            for (i=0;i<_de;i++) /* get memory OK */
+            // get memory OK
+            for (i=0;i<_de;i++) {
                 store(_hl+i,fetch(_hl+i));
-            
-            efp+=_de;
+            }
+
+            efp += _de;
         
-            for (i=0;i<10;i++)               /* let this file be it! */
-            mem[_hl+1+i]=mem[9985+1+i];
-        
-            firstTime = 0;
+            // let this file be it
+            for (i=0;i<10;i++) {                  
+                mem[_hl+1+i]=mem[9985+1+i];
+            }
+
+            firstTime = FALSE;
         }
         else {
             ptr = data;
             _de = *ptr++;
             _de += 256*(*ptr++);
-            memcpy(&mem[_hl],ptr,_de-1); /* -1 -> skip last byte */
+
+            // -1 -> skip last byte
+            memcpy(&mem[_hl],ptr,_de-1); 
             ptr += _de;
         
-            for (i=0;i<_de;i++) /* get memory OK */
+            // get memory OK
+            for (i=0;i<_de;i++) {
                 store(_hl+i,fetch(_hl+i));
-        
-            for (i=0;i<10;i++)               /* let this file be it! */
-               mem[_hl+1+i]=mem[9985+1+i];
-    
-               firstTime = 0;
+            }
+
+            // let this file be it!
+            for (i=0;i<10;i++) {               
+                mem[_hl+1+i]=mem[9985+1+i];
+            }
+               
+            firstTime = FALSE;
         }
     }
     else {
         if (data) {
             _de = *ptr++;
             _de += 256*(*ptr++);
-            memcpy(&mem[_hl],ptr,_de-1); /* -1 -> skip last byte */
-            for (i=0;i<_de;i++) /* get memory OK */
+
+            // -1 -> skip last byte
+            memcpy(&mem[_hl],ptr,_de-1); 
+
+            // get memory OK
+            for (int i=0;i<_de;i++) {
                 store(_hl+i,fetch(_hl+i));
+            }
+
             data = NULL;
         }
         else {
             _de=empty_tape[efp++];
             _de+=256*empty_tape[efp++];
-            memcpy(&mem[_hl],&empty_tape[efp],_de-1); /* -1 -> skip last byte */
-            for (i=0;i<_de;i++) /* get memory OK */
+
+            // -1 -> skip last byte
+            memcpy(&mem[_hl],&empty_tape[efp],_de-1); 
+            
+            // get memory OK
+            for (int i=0; i<_de; i++) {
                 store(_hl+i,fetch(_hl+i));
+            }
         }
 
-        firstTime = 1;
+        firstTime = TRUE;
     }
 }
