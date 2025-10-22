@@ -46,7 +46,7 @@ void platform_render_frame(void) {
     SDL_RenderCopy(s_renderer, s_texture, NULL, NULL);
     SDL_RenderPresent(s_renderer);
 
-    platform_log("Frame rendered");
+    platform_dbg("Frame rendered");
 }
 
 static int process_event() {
