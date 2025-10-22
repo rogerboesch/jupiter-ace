@@ -31,7 +31,7 @@
 #include <unistd.h>
 #include <time.h>
 
-// ----------------------------- Log helpers -----------------------------------
+// --- Log helpers -------------------------------------------------------------
 
 static ConsoleFn s_console = NULL;
 
@@ -99,7 +99,7 @@ void platform_dump_stop(void) {
     platform_write(LOG_SEV_DUMP_STOP, "");
 }
 
-// --------------------------- Console helpers ---------------------------------
+// --- Console helpers ---------------------------------------------------------
 
 void platform_set_console(ConsoleFn console) {
     s_console = console;
@@ -119,7 +119,7 @@ void platform_dump(const char *fmt, ...) {
     s_console(LOG_SEV_DUMP, buf);
 }
 
-// -------------------------- Time helpers -------------------------------------
+// --- Time helpers ------------------------------------------------------------
 
 static double _start = -99.0;
 
@@ -164,7 +164,7 @@ void platform_delay_ms(unsigned int ms) {
     // TODO: usleep(ms * 1000); 
 }
 
-// ------------------------------ Path helpers ---------------------------------
+// --- Path helpers ------------------------------------------------------------
 
 int platform_resource_file_path(char* path, int size, const char* filename, const char* extension) {
     char* homeDir = getenv("HOME");
@@ -180,3 +180,7 @@ int platform_get_asset_folder(char* path, int size) {
     return 1;
 
 }
+
+// --- File helpers ------------------------------------------------------------
+
+ssize_t platform_read_line(char **restrict lineptr, size_t *restrict n, FILE *restrict stream) { return 0;}

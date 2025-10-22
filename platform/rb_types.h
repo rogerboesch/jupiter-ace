@@ -1,6 +1,8 @@
 #ifndef RB_TYPES_H
 #define RB_TYPES_H
 
+#include <stdint.h>
+
 #define TRUE 1
 #define FALSE 0
 typedef int BOOL;

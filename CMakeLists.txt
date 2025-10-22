@@ -73,9 +73,17 @@ set(JUPITER_SOURCES
 	emulator/jupiter_file_handler.c
 )
 
+set(RENDERER_SOURCES
+	renderer/ret_texteditor.c
+	renderer/ret_textbuffer.c
+    renderer/ret_renderer.c
+    renderer/ret_palette.c
+    renderer/ret_font_speccy.c
+)
+
 # === JUPITER-ACE: SDL only ====================================================
 
-add_executable(jupiter ${JUPITER_SOURCES}
+add_executable(jupiter ${JUPITER_SOURCES} ${RENDERER_SOURCES}
     platform/main_sdl.c
     platform/rb_platform.c
 )
