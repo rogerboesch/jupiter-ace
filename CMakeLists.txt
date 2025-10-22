@@ -67,10 +67,10 @@ add_compile_definitions(SDL_MAIN_HANDLED)
 
 # Emulator sources
 set(JUPITER_SOURCES
-	src/z80.c
-	src/jupiter.c
-	src/jupiter_keyboard_handler.c
-	src/jupiter_file_handler.c
+	emulator/z80.c
+	emulator/jupiter.c
+	emulator/jupiter_keyboard_handler.c
+	emulator/jupiter_file_handler.c
 )
 
 # === JUPITER-ACE: SDL only ====================================================
