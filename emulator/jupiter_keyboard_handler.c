@@ -13,6 +13,7 @@
 extern int platform_get_key(void);
 extern void print_str(char* str, int x, int y);
 extern void print_char_set(void);
+extern void load_text_file_to_spooler(const char* filename);
 
 extern void refresh(BOOL force_refresh);
 
@@ -344,7 +345,10 @@ void keyboard_process(void) {
             if (esc_count == 0) {
                 platform_dbg("Press ESC first time");
 
-                print_str("PRESS <ESC> AGAIN TO QUIT", 1, 1);
+                print_str("                                ", 0, 1);
+                print_str("PRESS <ESC> AGAIN TO QUIT       ", 0, 2);
+                print_str("                                ", 0, 3);
+
                 esc_count++;
             }
             else {
@@ -371,6 +375,7 @@ void keyboard_process(void) {
             print_char_set();
             break;
         case KEY_F7:
+            load_text_file_to_spooler("/Users/roger/listing.txt");
             break;
         case KEY_F8:
             break;

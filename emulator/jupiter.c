@@ -26,6 +26,8 @@ extern void keyboard_clear(void);
 extern BYTE keyboard_get_keyport(int port);
 extern void keyboard_keypress(int aceKey);
 
+char *read_file(const char *path, size_t *out_len);
+
 extern void platform_set_pixel(int x, int y, UINT32 color);
 extern void platform_render_frame(void);
 extern void platform_exit(void);
@@ -283,7 +285,22 @@ void print_welcome(void) {
     print_str("JUPITER ACE EMU 0.4", 1, 1);
     print_str("\x7f 2025 BY ROGER BOESCH", 1, 2);
 
-    platform_dbg("Prnt welcome");
+    platform_dbg("Print welcome");
+}
+
+// --- Load text file and spool to keyboard ------------------------------------
+
+void load_text_file_to_spooler(const char* filename) {
+    size_t size = 0;
+    char* str = read_file(filename, &size);
+
+    if (str) {
+        spooler_add_str(str);
+        free(str);
+    }
+    else {
+        platform_dbg("Failed to load text file '%s' to spooler", filename);
+    }
 }
 
 // --- Main emulatoir loop -----------------------------------------------------
