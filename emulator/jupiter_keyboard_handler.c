@@ -63,6 +63,14 @@ void spooler_add_str(char* str) {
     keyboard_clear();
 }
 
+void spooler_clear(void) {
+    if (spooling_string) {
+        free(spooling_string);
+        spooling_string = NULL;
+        spooling_string_pos = NULL;
+    }
+}
+
 // --- Keyboard & Sound --------------------------------------------------------
 
 typedef enum {
@@ -343,8 +351,6 @@ void keyboard_process(void) {
     switch (key) {
         case KEY_ESC:
             if (esc_count == 0) {
-                platform_dbg("Press ESC first time");
-
                 print_str("                                ", 0, 1);
                 print_str("PRESS <ESC> AGAIN TO QUIT       ", 0, 2);
                 print_str("                                ", 0, 3);
@@ -352,7 +358,7 @@ void keyboard_process(void) {
                 esc_count++;
             }
             else {
-                platform_log("Escape key pressed, quit");
+                platform_dbg("Escape key pressed, quit");
                 quit = 1;
             }
             break;
@@ -382,7 +388,8 @@ void keyboard_process(void) {
         case KEY_F9:
             break;
         case KEY_F10:
-            platform_log("F10 key pressed, RESET");
+            platform_dbg("F10 key pressed, RESET");
+            spooler_clear();
             reset_ace = 1;
             break;
 
@@ -413,7 +420,6 @@ void keyboard_process(void) {
   
     // Reset ESC counter
     if (key != KEY_ESC && esc_count != 0) {
-        platform_dbg("Reset ESC counter");
         esc_count = 0;
 
         refresh(TRUE);

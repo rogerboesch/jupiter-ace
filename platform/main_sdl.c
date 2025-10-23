@@ -150,7 +150,7 @@ void platform_exit(void) {
 int main(int const argc, const char* const argv[], char* envv[]) {
     platform_log("Path: %s", argv[0]);
 
-    platform_log("Start emulator");
+    platform_dbg("Start emulator");
 
     platform_init();
 
@@ -158,7 +158,7 @@ int main(int const argc, const char* const argv[], char* envv[]) {
 
     platform_exit();
 
-    platform_log("Stop emulator");
+    platform_dbg("Stop emulator");
 
     return 0;
 }

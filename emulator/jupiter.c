@@ -299,7 +299,7 @@ void load_text_file_to_spooler(const char* filename) {
         free(str);
     }
     else {
-        platform_dbg("Failed to load text file '%s' to spooler", filename);
+        platform_err("Failed to load text file '%s' and send to spooler", filename);
     }
 }
 

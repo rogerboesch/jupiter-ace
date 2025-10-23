@@ -10,6 +10,10 @@
 #include "rb_types.h"
 #include "rb_platform.h"
 
+// --- Functions ---------------------------------------------------------------
+
+BOOL save_bytes(char* filename, BYTE* data, int size);
+
 // --- Globals -----------------------------------------------------------------
 
 extern BYTE mem[65536];
@@ -60,8 +64,11 @@ BYTE empty_bytes[799] = {
 void save_p(int _de, int _hl) {
     char filename[64];
     static int firstTime=1;    
+    static BYTE data[3*1024];
+    static int data_offset = 0;
     
     if (firstTime) {
+        data_offset = 0;
         //_data = [NSMutableData data];
         int i=0;
 
@@ -71,26 +78,31 @@ void save_p(int _de, int _hl) {
         }
 
         filename[i++]='.';
-        if (mem[8961]) { /* dict or bytes save */
+
+        // ace or byt extensions
+        if (mem[8961]) { 
             filename[i++]='b';
             filename[i++]='y';
             filename[i++]='t';
         }
         else {
-            filename[i++]='d';
-            filename[i++]='i';
+            filename[i++]='a';
             filename[i++]='c';
+            filename[i++]='e';
         }
         filename[i++]='\0';
 
-        //_filename = [NSString stringWithCString:filename encoding:NSUTF8StringEncoding];
         _de++;
         char bytes[2] = {
             _de&0xff,
             (_de>>8)&0xff,
         };
 
-        platform_dbg("Save file is not yet implemented");
+        memcpy(data+data_offset, bytes, sizeof(bytes));
+        data_offset += sizeof(bytes);
+        
+        memcpy(data+data_offset, &mem[_hl], _de);
+        data_offset += _de;
 
         //[_data appendBytes:bytes length:sizeof(bytes)];
         //[_data appendBytes:&mem[_hl] length:_de];
@@ -104,15 +116,23 @@ void save_p(int _de, int _hl) {
             (_de>>8)&0xff,
         };
 
+        memcpy(data+data_offset, bytes, sizeof(bytes));
+        data_offset += sizeof(bytes);
+        
+        memcpy(data+data_offset, &mem[_hl], _de);
+        data_offset += _de;
+
         //[_data appendBytes:bytes length:sizeof(bytes)];
         //[_data appendBytes:&mem[_hl] length:_de];
         firstTime = 1;
         
-        //tapes[_filename] = _data;
+        if (save_bytes(filename, data, data_offset)) {
+            platform_log("File written successfully to'%s'", filename);
+        }
 
+        //tapes[_filename] = _data;
         //NSString *dir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
         //[tapes writeToFile:[dir stringByAppendingString:@"/tapes.dic"] atomically:YES];
-
         //_filename = nil;
         //_data = nil;
     }
@@ -134,16 +154,18 @@ void load_p(int _de, int _hl) {
         }
 
         filename[i++]='.';
-        if (mem[9985]) { /* dict or bytes load */
+
+        // ace or byt extensions
+        if (mem[9985]) { 
             filename[i++]='b';
             filename[i++]='y';
             filename[i++]='t';
             empty_tape = empty_bytes;
         }
         else {
-            filename[i++]='d';
-            filename[i++]='i';
+            filename[i++]='a';
             filename[i++]='c';
+            filename[i++]='e';
             empty_tape = empty_dict;
         }
 
@@ -231,7 +253,7 @@ void load_p(int _de, int _hl) {
     }
 }
 
-// --- Read an entire text file ------------------------------------------------
+// --- Platform file I/O -------------------------------------------------------
 
 static BOOL get_home_folder(char* path) {
     struct passwd *pw = getpwuid(getuid());
@@ -284,4 +306,35 @@ char *read_file(const char *filename, size_t *out_len) {
     }
     
     return buf;
+}
+
+BOOL save_bytes(char* filename, BYTE* data, int size) {
+    char folder[100];
+    get_home_folder(folder);
+
+    platform_dbg("Home folder: %s", folder);
+
+    char path[200];
+    snprintf(path, 199, "%s/%s", folder, filename);
+    platform_dbg("Path: %s", path);
+
+    FILE *fp = fopen(path, "wb");
+
+    if (!fp) {
+        return FALSE;
+    }
+    
+    size_t bytes_written = fwrite(data, size, 1, fp);   
+
+    if (bytes_written != 1) {
+        platform_err("Error writing to file '%s'", filename);
+        fclose(fp);
+
+        return FALSE;
+    }
+
+    fclose(fp);
+
+    return TRUE;
+
 }
