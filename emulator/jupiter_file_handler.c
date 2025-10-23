@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <pwd.h>
 
 #include "z80.h"
 #include "rom_frogger.h"
@@ -232,7 +233,24 @@ void load_p(int _de, int _hl) {
 
 // --- Read an entire text file ------------------------------------------------
 
-char *read_file(const char *path, size_t *out_len) {
+static BOOL get_home_folder(char* path) {
+    struct passwd *pw = getpwuid(getuid());
+
+    strcpy(path, pw->pw_dir);
+
+    return TRUE;
+}
+
+char *read_file(const char *filename, size_t *out_len) {
+    char folder[100];
+    get_home_folder(folder);
+
+    platform_dbg("Home folder: %s", folder);
+
+    char path[200];
+    snprintf(path, 199, "%s/%s", folder, filename);
+    platform_dbg("Path: %s", path);
+
     FILE *fp = fopen(path, "rb");
 
     if (!fp) {

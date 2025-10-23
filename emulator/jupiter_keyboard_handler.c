@@ -375,7 +375,7 @@ void keyboard_process(void) {
             print_char_set();
             break;
         case KEY_F7:
-            load_text_file_to_spooler("/Users/roger/listing.txt");
+            load_text_file_to_spooler("listing.txt");
             break;
         case KEY_F8:
             break;
