@@ -340,7 +340,7 @@ int process_key(int code) {
 }
 
 void keyboard_process(void) {
-    static int esc_count = 0;
+    static int quit_count = 0;
     int key = platform_get_key();
     int code = 0;
     
@@ -350,17 +350,7 @@ void keyboard_process(void) {
     
     switch (key) {
         case KEY_ESC:
-            if (esc_count == 0) {
-                print_str("                                ", 0, 1);
-                print_str("PRESS <ESC> AGAIN TO QUIT       ", 0, 2);
-                print_str("                                ", 0, 3);
-
-                esc_count++;
-            }
-            else {
-                platform_dbg("Escape key pressed, quit");
-                quit = 1;
-            }
+            spooler_add_str("\x26"); // Break
             break;
         case KEY_F1:
             spooler_add_str("load frogger\n");  // Temporary
@@ -386,11 +376,22 @@ void keyboard_process(void) {
         case KEY_F8:
             break;
         case KEY_F9:
-            break;
-        case KEY_F10:
-            platform_dbg("F10 key pressed, RESET");
+            platform_dbg("F9 key pressed, RESET");
             spooler_clear();
             reset_ace = 1;
+            break;
+        case KEY_F10:
+            if (quit_count == 0) {
+                print_str("                                ", 0, 1);
+                print_str("PRESS <F10> AGAIN TO QUIT       ", 0, 2);
+                print_str("                                ", 0, 3);
+
+                quit_count++;
+            }
+            else {
+                platform_dbg("F10 key pressed, quit");
+                quit = 1;
+            }
             break;
 
         case KEY_LEFT:
@@ -419,8 +420,8 @@ void keyboard_process(void) {
     }
   
     // Reset ESC counter
-    if (key != KEY_ESC && esc_count != 0) {
-        esc_count = 0;
+    if (key != KEY_F10 && quit_count != 0) {
+        quit_count = 0;
 
         refresh(TRUE);
     }
