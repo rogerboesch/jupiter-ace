@@ -232,15 +232,24 @@ static int keyboard_get_key_response(AceKey aceKey, int *keyport1, int *keyport2
     int i;
     int num_keys = sizeof(keypress_response)/sizeof(keypress_response[0]);
     
+    int line = 0;
     for (i = 0; i < num_keys; i+= 5) {
         if (keypress_response[i] == (int)aceKey) {
             *keyport1 = keypress_response[i+1];
             *keyport2 = keypress_response[i+3];
             *keyport1_response = keypress_response[i+2];
             *keyport2_response = keypress_response[i+4];
+
+            platform_dbg("AceKey #: %d (line: %d, index: %d of %d)", (int)aceKey, line, i, num_keys);
+
             return 1;
         }
+
+        line++;
     }
+
+    platform_dbg("AceKey not found: %d", aceKey);
+
     return 0;
 }
 
